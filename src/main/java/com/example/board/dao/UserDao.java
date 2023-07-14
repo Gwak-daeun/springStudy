@@ -1,6 +1,8 @@
 package com.example.board.dao;
 
 import com.example.board.dto.User;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 
 @Repository // @Repository는 @Component를 상속받고 있어서 스프링이 관리하는 Bean이다.
 public class UserDao {
@@ -43,7 +46,7 @@ public class UserDao {
         user.setName(name); // name 칼럼
         user.setEmail(email);
         user.setPassword(password);
-        user.setRegDate(new java.util.Date().toString());//Date 객체를 생성하고 문자열로 변환해서 저장
+        user.setRegDate(LocalDateTime.now());//Date 객체를 생성하고 문자열로 변환해서 저장
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
         //BeanPropertySqlParameterSource: DTO에 있는 값을 자동으로 sql parameter source로 넣어주는 객체.
         // 인터페이스인 SqlParameterSource를 구현하는 객체
@@ -64,7 +67,17 @@ public class UserDao {
         String sql = "insert into user_role(user_id, role_id) values(:userId, 1)";
         SqlParameterSource params = new MapSqlParameterSource("userId", userId);
         //MapSqlParameterSource의 인자로 parameter name과 value를 넣을 수도 있고, 여러개일 땐 Map자체를 넣어줄 수도 있다.
+
         jdbcTemplate.update(sql, params);
+    }
+    @Transactional
+    public User getUser(String email) {
+        //user_id => setUserId, email => setEmail ...
+        String sql = "select user_id, email, name, password, regdate from user where email = :email"; // 유저가 입력한 email에 해당하는 정보를 읽어오도록
+        SqlParameterSource params = new MapSqlParameterSource("email", email);
+        RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class); // User클래스 정보를 통해 각각의 컬럼을 매핑해주는 rowMapper가 생성됨
+         User user =  jdbcTemplate.queryForObject(sql, params, rowMapper);
+         return user;
     }
 }
  /*

@@ -35,6 +35,12 @@ public class UserService {
         return user;
         //리턴 후 트랜잭션이 끝난다.
     }
+
+    @Transactional
+    public User getUser(String email) {
+        return userDao.getUser(email);
+    }
+
 }
 /*
         * insert into user(email, name, password, regdate) values(?, ?, ?, now());

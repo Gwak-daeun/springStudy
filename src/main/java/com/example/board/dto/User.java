@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter // lombok 라이브러리가 getter, setter를 어노테이션으로 만들어준다.
 @NoArgsConstructor // 기본 생성자가 자동으로 만들어진다.
@@ -12,7 +14,7 @@ public class User {
     private String email;
     private String name;
     private String password;
-    private String regDate; // 원래는 날짜 타입으로 읽어온 후 문자열로 변환해야 한다.
+    private LocalDateTime regDate; // 원래는 날짜 타입으로 읽어온 후 문자열로 변환해야 한다.
 
 
 }

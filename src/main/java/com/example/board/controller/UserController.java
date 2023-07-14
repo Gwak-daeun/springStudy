@@ -1,12 +1,17 @@
 package com.example.board.controller;
 
+import com.example.board.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor // lombok이 자동으로 final변수를 초기화해주는 생성자를 만들게 된다.
 public class UserController {
+
+    private final UserService userService;
 
     //localhost:8080/userRegForm
     //classpath:/templates/userRegForm.html
@@ -25,6 +30,9 @@ public class UserController {
         System.out.println("name: " + name);
         System.out.println("email: " + email);
         System.out.println("password: " + password);
+
+        userService.addUser(name, email, password);
+
         return "redirect:/welcome";
         //리다이렉트: 이동시키라는 뜻
         //브라우저에게 자동으로 http://localhost:8080/welcome으로 이동하라는 뜻
@@ -50,8 +58,15 @@ public class UserController {
 
         System.out.println("email: " + email);
         System.out.println("password: " + password);
-        //email에 해당하는 회원정보를 읽어온 후
+        //email에 해당하는 회원정보를 읽어온 후 -> userService에 회원정보를 가지고 오는 기능이 필요하다.
         //아이디 암호가 맞다면 세션에 회원정보를 저장한다.
+
+        try {
+            userService.getUser(email);
+        } catch (Exception ex) {
+            return "redirect:/loginform?error=true"; // email에 해당하는 정보가 없으면 다시 로그인 폼으로 리다이렉트 하는데, 
+        }
+
         return "redirect:/";
     }
 
