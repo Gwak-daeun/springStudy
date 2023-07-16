@@ -3,12 +3,14 @@ package com.example.board.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter // lombok 라이브러리가 getter, setter를 어노테이션으로 만들어준다.
 @NoArgsConstructor // 기본 생성자가 자동으로 만들어진다.
+@ToString //lombok toString()메소드를 자동으로 만들어준다.
 public class User {
     private int userId;
     private String email;
