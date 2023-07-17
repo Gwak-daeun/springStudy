@@ -5,6 +5,7 @@ import com.example.board.dto.User;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,6 +80,7 @@ public class UserController {
                 //session은 현재 브라우저 사용자만 접근할 수 있다.
                 //각각의 브라우저마다 세션이 내부적으로 각각 다르게 만들어진다고 보면 된다.
                 //서버에 접속한 클라이언트가 10개면 세션도 10개인 것
+                //서버를 재시작 하면 세션 정보가 지워진다.
                 System.out.println("세션에 로그인 정보가 저장됨");
             } else {
                 throw new RuntimeException("암호가 같지 않아요");
@@ -99,24 +101,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/writeForm")
-    public String writeFrom() {
-        //로그인한 사용자만 글을 써야 한다.
-        //세션에서 로그인한 정보를 읽어들인다. 로그인을 하지 않았다면 리스트 보기로 이동시킨다.
 
-        return "writeFrom";
-    }
 
-    @PostMapping("/write")
-    public String write(
-            @RequestParam("title") String title,
-            @RequestParam("content") String content
-    ) {
-        //로그인한 사용자만 글을 써야 한다.
-        //세션에서 로그인한 정보를 읽어들인다. 로그인을 하지 않았다면 리스트 보기로 이동시킨다.
 
-        //로그인 한 회원 정보 + 제목, 내용을 저장한다.
-
-        return "redirect:/"; //리스트 보기로 리다이렉트한다.
-    }
 }

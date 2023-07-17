@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,6 +10,7 @@
 <H1>글쓰기 폼</H1>
 <form action="/write" method="post">
     이름 : <span th:text="${loginInfo.name}"></span><br>
+<!--  UserController에서 model에다가 담은 객체의 값(loginInfo)을 꺼내 쓴다.  -->
     제목 : <input type="text" name="title" /><br />
     내용 : <br>
     <textarea name="content" cols="50" rows="5"></textarea><br>

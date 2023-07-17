@@ -21,7 +21,7 @@ public class UserDao {
     private final NamedParameterJdbcTemplate jdbcTemplate; //jdbcTemplate을 사용하기 위한 변수
     //final 변수는 생성자에서 값을 초기화 해야 한다.
 
-    private SimpleJdbcInsertOperations insertUser; // sql의 insert를 하게 해주는 인터페이스
+    private final SimpleJdbcInsertOperations insertUser; // sql의 insert를 하게 해주는 인터페이스
 
     //jdbcTemplate을 초기화 하려면 DataSource가 필요하다.
     public UserDao(DataSource dataSource) {
@@ -48,7 +48,7 @@ public class UserDao {
         user.setPassword(password);
         user.setRegDate(LocalDateTime.now());//Date 객체를 생성하고 문자열로 변환해서 저장
         SqlParameterSource params = new BeanPropertySqlParameterSource(user);
-        //BeanPropertySqlParameterSource: DTO에 있는 값을 자동으로 sql parameter source로 넣어주는 객체.
+        //BeanPropertySqlParameterSource: DTO에 있는 값을 자동으로 sql parameter source로 컬럼에 맞게 넣어주는 객체.
         // 인터페이스인 SqlParameterSource를 구현하는 객체
 
        Number number = insertUser.executeAndReturnKey(params); // insert를 실행하고, 자동으로 생성된 id를 가져온다.
