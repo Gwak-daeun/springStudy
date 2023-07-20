@@ -74,10 +74,14 @@ public class BoardController {
     //id에 해당하는 게시물을 읽어온다.
     //id에 해당하는 게시물의 조회수도 1증가한다.
     @GetMapping("/board")
-    public String board(@RequestParam("id") int id){
+    public String board(@RequestParam("boardId") int boardId, Model model){
                         //url의 id 뒤에 있는 값을 자동으로 넘겨받게 된다.
 
-        System.out.println("id: " + id);
+       Board board = boardService.getBoard(boardId);
+
+        model.addAttribute("board", board);
+
+        System.out.println("boardId: " + boardId);
         return "board";
     }
 
@@ -104,6 +108,22 @@ public class BoardController {
         //로그인 한 회원 정보 + 제목, 내용을 저장한다.
 
         return "redirect:/"; //리스트 보기로 리다이렉트한다.
+    }
+
+    @GetMapping("/delete")
+    public String delete(
+            @RequestParam int boardId,
+            HttpSession session
+    ) {
+        LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
+        if (loginInfo == null) {// 세션에 로그인 정보가 없으면 /loginform으로 리다이렉트
+            return "redirect:/loginform";
+        }
+
+        //loginInfo.getUserId() 사용자가 쓴 글일 경우에만 삭제한다.
+        boardService.deleteBoard(loginInfo.getUserId(), boardId);
+
+        return "redirect:/";
     }
 
 }

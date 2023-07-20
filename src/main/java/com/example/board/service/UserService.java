@@ -29,6 +29,12 @@ public class UserService {
     //Spring boot는 트랜잭션을 처리해주는 트랜잭션 관리자를 가지고 있다.
     @Transactional // 트랜잭션으로 동작하기 위한 어노테이션
     public User addUser(String name, String email, String password) { // 트랜잭션이 시작된다.
+
+        User user1 = userDao.getUser(email);
+        if (user1 != null) {
+            throw new RuntimeException("이미 가입된 이메일 입니다.");
+        }
+
         User user = userDao.addUser(email, name, password);
         userDao.mappingUserRole(user.getUserId()); // 권한 부여
 

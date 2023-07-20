@@ -42,6 +42,7 @@ public class UserDao {
     // insert into user(email, name, password, regdate) values(:email, :name, :password, :regDate); #user_id auto gen
     // SELECT LAST_INSERT_ID();
 
+
         User user = new User();
         user.setName(name); // name 칼럼
         user.setEmail(email);
@@ -72,12 +73,16 @@ public class UserDao {
     }
     @Transactional
     public User getUser(String email) {
-        //user_id => setUserId, email => setEmail ...
-        String sql = "select user_id, email, name, password, regdate from user where email = :email"; // 유저가 입력한 email에 해당하는 정보를 읽어오도록
-        SqlParameterSource params = new MapSqlParameterSource("email", email);
-        RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class); // User클래스 정보를 통해 각각의 컬럼을 매핑해주는 rowMapper가 생성됨
-         User user =  jdbcTemplate.queryForObject(sql, params, rowMapper);
-         return user;
+        try {
+            //user_id => setUserId, email => setEmail ...
+            String sql = "select user_id, email, name, password, regdate from user where email = :email"; // 유저가 입력한 email에 해당하는 정보를 읽어오도록
+            SqlParameterSource params = new MapSqlParameterSource("email", email);
+            RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class); // User클래스 정보를 통해 각각의 컬럼을 매핑해주는 rowMapper가 생성됨
+            User user =  jdbcTemplate.queryForObject(sql, params, rowMapper);
+            return user;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
  /*
