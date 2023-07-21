@@ -126,4 +126,17 @@ public class BoardController {
         return "redirect:/";
     }
 
+    @GetMapping("/updateform")
+    public String updatefoom(@RequestParam("boardId") int boardId) {
+        //boardId에 해당하는 정보를 읽어와서 updateform 템플릿에 전달한다.
+        boardService.getBoard(boardId);
+        return "updateform";
+    }
+
+    @PostMapping("/update")
+    public String update() {
+        //boardId에 해당하는 글의 제목과 내용을 수정한다.
+        //글쓴이만 수정 가능
+        return "redirect:/board?boardId=게시물 id값";//수정된 글 보기로 리다이렉트
+    }
 }

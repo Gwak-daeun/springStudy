@@ -40,6 +40,17 @@ public class BoardService {
 
     }
 
+    //updateViewCnt가 true이면 글의 조회수 증가, false면 글의 조회수를 증가하지 않도록 한다.
+    @Transactional
+    public Board getBoard(int boardId, boolean updateViewCnt) {
+        Board board =  boardDao.getBoard(boardId);
+        if (updateViewCnt) {
+            boardDao.updateViewCount(boardId);
+        }
+        boardDao.updateViewCount(boardId);
+        return board;
+    }
+
     @Transactional
     public void deleteBoard(int userId, int boardId) {
         Board board =  boardDao.getBoard(boardId);
