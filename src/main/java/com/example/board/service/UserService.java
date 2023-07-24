@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 //트랜잭션 단위로 실행될 메소드를 선언하고 있는 클래스
 @Service // @Service도 @Component를 상속받고 있어서 스프링이 관리하는 Bean이다.
 @RequiredArgsConstructor//lombok이 final한 변수를 초기화해주는 생성자를 쉽게 자동으로 만들어준다.
@@ -47,6 +49,10 @@ public class UserService {
         return userDao.getUser(email);
     }
 
+    @Transactional(readOnly = true)
+    public List<String> getRoles(int userId) { //userId에 해당하는 유저가 갖고있는 모든 role정보를 가져온다.
+        return userDao.getRoles(userId);
+    }
 }
 /*
         * insert into user(email, name, password, regdate) values(?, ?, ?, now());

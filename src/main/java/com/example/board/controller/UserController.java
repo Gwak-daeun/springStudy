@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor // lombok이 자동으로 final변수를 초기화해주는 생성자를 만들게 된다.
@@ -74,6 +75,13 @@ public class UserController {
             if (user.getPassword().equals(password)) {
                 System.out.println("암호가 같아요.");
                 LoginInfo loginInfo = new LoginInfo(user.getUserId(), user.getEmail(), user.getName());
+
+                //권한 정보를 읽어와서 loginInfo에 추가한다.
+              List<String> roles = userService.getRoles(user.getUserId());
+                //해당 유저가 갖고 있는 모든 role 정보를 읽어온다.(문자열로 된 role 권한)
+
+                loginInfo.setRoles(roles); // loginInfo에 로그인 권한 부여
+
                 httpSession.setAttribute("loginInfo", loginInfo); //첫번째 파라피터는 키, 두번째 파라미터는 값
                 //세션에는 키, 값으로 여러개의 값을 저장할 수 있다.
                 //키가 같으면 여러번 setAttribute()를 해도 나중의 값이 기존 값을 덮어쓰게 됨 => 여러번 로그인 시도를 하면 마지막 값만 저장됨

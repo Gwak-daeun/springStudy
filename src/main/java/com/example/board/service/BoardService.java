@@ -32,11 +32,7 @@ public class BoardService {
     @Transactional // 이 메소드에서는 readOnly를 붙이지 않는다. 게시물의 조회수를 수정해야 하기 때문
     public Board getBoard(int boardId) {
         //id에 해당하는 게시물을 읽어온다.
-      Board board =  boardDao.getBoard(boardId);
-
-        //id에 해당하는 게시물의 조회수도 1증가한다.
-        boardDao.updateViewCount(boardId);
-        return board;
+        return getBoard(boardId, true);
 
     }
 
@@ -47,7 +43,6 @@ public class BoardService {
         if (updateViewCnt) {
             boardDao.updateViewCount(boardId);
         }
-        boardDao.updateViewCount(boardId);
         return board;
     }
 
@@ -57,5 +52,15 @@ public class BoardService {
         if (board.getBoardId() == userId) {
             boardDao.deleteBoard(boardId);
         }
+    }
+
+    @Transactional
+    public void deleteBoard( int boardId) {
+        boardDao.deleteBoard(boardId);
+    }
+
+    @Transactional
+    public void updateBoard(int boardId, String title, String content) {
+        boardDao.updateBoard(boardId, title, content);
     }
 }

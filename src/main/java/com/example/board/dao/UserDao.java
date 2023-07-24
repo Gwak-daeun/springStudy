@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Repository // @Repository는 @Component를 상속받고 있어서 스프링이 관리하는 Bean이다.
 public class UserDao {
@@ -84,6 +86,17 @@ public class UserDao {
             return null;
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<String> getRoles(int userId) {
+        String sql = "select r.name  from user_role ur, role r where ur.role_id=r.role_id and ur.user_id = :userId";
+
+       List<String> roles = jdbcTemplate.query(sql, Map.of("userId", userId), (rs, rowNum) -> { //rs: resultSet
+            return rs.getString(1); // => rs(resultSet)으로 부터 첫 번째 컬럼에 해당하는 문자열(일반 유저 권한)을 읽어와서 리턴하겠다.
+        });
+       return roles;
+    }
+
 }
  /*
 * insert into user(email, name, password, regdate) values(?, ?, ?, now());

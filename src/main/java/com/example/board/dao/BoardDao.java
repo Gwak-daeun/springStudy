@@ -79,9 +79,28 @@ public class BoardDao {
         jdbcTemplate.update(sql, Map.of("boardId", boardId));
     }
 
-    @Transactional
+
     public void deleteBoard(int boardId) {
         String sql = "delete from board where board_id = :boardId";
         jdbcTemplate.update(sql, Map.of("boardId", boardId));
+    }
+
+    @Transactional
+    public void updateBoard(int boardId, String title, String content) {
+        String sql = "update board\n" +
+                "\n" +
+                "set title = :title, content = :content\n" +
+                "\n" +
+                "where board_id = :boardId";
+
+//        jdbcTemplate.update(sql, Map.of("boardId", boardId, "title", title, "content", content));
+        Board board = new Board();
+        board.setBoardId(boardId);
+        board.setTitle(title);
+        board.setContent(content);
+        SqlParameterSource params = new BeanPropertySqlParameterSource(board);
+        //board객체가 갖고 있는 값을 BeanPropertySqlParameterSource로 바꾼다.
+        jdbcTemplate.update(sql, params);
+
     }
 }

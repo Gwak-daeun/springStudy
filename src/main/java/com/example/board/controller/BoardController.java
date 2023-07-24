@@ -121,22 +121,57 @@ public class BoardController {
         }
 
         //loginInfo.getUserId() 사용자가 쓴 글일 경우에만 삭제한다.
-        boardService.deleteBoard(loginInfo.getUserId(), boardId);
+        List<String> roles = loginInfo.getRoles();
+
+        if (roles.contains("ROLE_ADMIN")) {
+            boardService.deleteBoard(boardId); // 관리자 권한이면 조건 없이 삭제(같은 메소드명 오버로딩함)
+        } else {
+            boardService.deleteBoard(loginInfo.getUserId(), boardId); // 관리자 권한 없을 때(일반 유저일 때) 아이디가 일치하는지 체크
+        }
 
         return "redirect:/";
     }
 
     @GetMapping("/updateform")
-    public String updatefoom(@RequestParam("boardId") int boardId) {
+    public String updatefoom(@RequestParam("boardId") int boardId, Model model, HttpSession session) {
+
+        LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
+        if (loginInfo == null) {// 세션에 로그인 정보가 없으면 /loginform으로 리다이렉트
+            return "redirect:/loginform";
+        }
+
         //boardId에 해당하는 정보를 읽어와서 updateform 템플릿에 전달한다.
-        boardService.getBoard(boardId);
+       Board board = boardService.getBoard(boardId, false);
+        //수정할 땐 조회수를 증가시키지 않을거니까 false로 전달
+        model.addAttribute("board", board);
+        model.addAttribute("loginInfo", loginInfo);
         return "updateform";
     }
 
     @PostMapping("/update")
-    public String update() {
+    public String update(
+            @RequestParam("boardId") int boardId,
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            HttpSession session
+    ) {
         //boardId에 해당하는 글의 제목과 내용을 수정한다.
         //글쓴이만 수정 가능
-        return "redirect:/board?boardId=게시물 id값";//수정된 글 보기로 리다이렉트
+
+        LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
+        if (loginInfo == null) {// 세션에 로그인 정보가 없으면 /loginform으로 리다이렉트
+            return "redirect:/loginform";
+        }
+
+        Board board = boardService.getBoard(boardId, false);
+
+        if (board.getUserId() != loginInfo.getUserId()) { //로그인한 아이디와 게시글 작성자 아이디가 일지하지 않으면
+            return "redirect:/board?boardId=" + boardId;  // 다시 해당 게시글 보기로 이동한다..
+        }
+
+        boardService.updateBoard(boardId, title, content);
+
+      //  return "redirect:/board?boardId=게시물 id값";//수정된 글 보기로 리다이렉트
+        return "redirect:/board?boardId=" + boardId;
     }
 }
